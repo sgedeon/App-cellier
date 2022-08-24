@@ -45,7 +45,7 @@ class Controler
 
 		private function accueil()
 		{
-			$bte = new Bouteille();
+			$bte = new Cellier();
             $data = $bte->getListeBouteilleCellier();
 			include("vues/entete.php");
 			include("vues/cellier.php");
@@ -56,7 +56,7 @@ class Controler
 
 		private function listeBouteille()
 		{
-			$bte = new Bouteille();
+			$bte = new Cellier();
             $cellier = $bte->getListeBouteilleCellier();
             
             echo json_encode($cellier);
@@ -114,19 +114,3 @@ class Controler
 		}
 		
 }
-?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

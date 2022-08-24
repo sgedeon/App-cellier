@@ -29,48 +29,6 @@ class Bouteille extends Modele
 		return $rows;
 	}
 
-	public function getListeBouteilleCellier()
-	{
-
-		$rows = array();
-		$requete = 'SELECT 
-						c.id as id_bouteille_cellier,
-						b.date_achat, 
-						b.garde_jusqua, 
-						b.notes, 
-						b.prix_saq, 
-						b.quantite,
-						b.millesime, 
-						b.id,
-						b.nom, 
-						b.type, 
-						b.image, 
-						b.code_saq, 
-						b.url_saq, 
-						b.pays, 
-						b.description,
-						t.type 
-						from vino__cellier c 
-						INNER JOIN vino__bouteille b ON c.id = b.id
-						INNER JOIN vino__type t ON t.id = b.type
-						';
-		if (($res = $this->_db->query($requete)) ==	 true) {
-			if ($res->num_rows) {
-				while ($row = $res->fetch_assoc()) {
-					$row['nom'] = trim(utf8_encode($row['nom']));
-					$rows[] = $row;
-				}
-			}
-		} else {
-			throw new Exception("Erreur de requête sur la base de donnée", 1);
-			//$this->_db->error;
-		}
-
-
-
-		return $rows;
-	}
-
 	/**
 	 * Cette méthode permet de retourner les résultats de recherche pour la fonction d'autocomplete de l'ajout des bouteilles dans le cellier
 	 * 

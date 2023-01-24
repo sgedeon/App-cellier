@@ -123,16 +123,6 @@ export default function FrmAjoutBouteille(props) {
    */
   const navigate = useNavigate();
 
-  /**
-   *  Fetch la liste de la bouteilles de la BD pour préparer à injecter à la liste du composant 'Autocomplete'
-   */
-
-  useEffect(() => {
-    if (localStorage.getItem("vins") !== null) {
-      setVinsListe(JSON.parse(localStorage.getItem("vins")));
-    }
-  }, []);
-
   useEffect(() => {
     fetch(props.URI + "/cellier/1/vins")
       .then((response) => {
@@ -143,10 +133,6 @@ export default function FrmAjoutBouteille(props) {
       })
       .then((data) => {
         setVinsListe(data);
-        localStorage.setItem("vins", JSON.stringify(data.slice(0, 1000)));
-        if (data["erreur"]) {
-          setVinsListe(JSON.parse(localStorage.getItem("vins")));
-        }
       });
   }, []);
   /**
@@ -180,7 +166,7 @@ export default function FrmAjoutBouteille(props) {
     setVinFormat("");
     setVinPrix(1);
     setVinDescription("");
-    setVinGarde(moment().get("day").toString());
+    setVinGarde(moment().add(1, "years").format("YYYY-MM-DD"));
     setVinImage("");
     setVinNom(" ");
     setVinNote("");
@@ -588,7 +574,6 @@ export default function FrmAjoutBouteille(props) {
                   value={vinCellier}
                   onChange={(e) => {
                     setVinCellier(e.target.value);
-                    console.log(vinCellier);
                   }}
                   SelectProps={{
                     native: true,

@@ -20,15 +20,18 @@ function ListeBouteilles(props) {
   /**
    *  État des bouteilles au tri
    */
-  const [data, setData] = useState([]);
+  const [unique, setUnique] = useState(false);
   const [sortType, setSortType] = useState([]);
   const navigate = useNavigate();
+  let indexBouteille = props.bouteilles.findIndex((object) => {
+    return object.id === props.cible;
+  });
 
   /**
    *  État des bouteilles au tri
    */
   useEffect(() => {
-    let result = data;
+    let result;
     switch (sortType) {
       case "qt-decroissante": {
         result = [...props.bouteilles].sort((a, b) => {
@@ -104,11 +107,46 @@ function ListeBouteilles(props) {
     props.fetchVins(props.cellier);
     props.fetchNomCellier(props.cellier);
     setSortType("tout");
-  }, []);
+  }, [debut, fin]);
 
   useEffect(() => {
-    props.fetchVins(props.cellier);
+    if (changementBouteille !== false) {
+      props.fetchVins(props.cellier);
+    }
   }, [changementBouteille]);
+
+  useEffect(() => {
+    if (props.cible) {
+      if (document.querySelectorAll("[data-id]").length > 1) {
+        if (
+          document.querySelector(`[data-id="${props.cible}"]`) &&
+          unique === false &&
+          changementBouteille === false
+        ) {
+          let cible = document.querySelector(`[data-id="${props.cible}"]`);
+          let target = cible.getBoundingClientRect().top + window.scrollY;
+          window.scrollTo({
+            top: target,
+            behavior: "smooth",
+          });
+        } else if (props.bouteilles.length > 200) {
+          setUnique(true);
+        }
+      }
+    }
+  }, [props.bouteilles]);
+
+  useEffect(() => {
+    if (props.cible && props.bouteilles.length > 200 && indexBouteille >= 200) {
+      setDebut(indexBouteille);
+    }
+  }, [unique]);
+
+  useEffect(() => {
+    if (props.cible && props.bouteilles.length > 200 && indexBouteille >= 200) {
+      setFin(debut + 1);
+    }
+  }, [debut]);
 
   function gererVoirPlus() {
     if (props.bouteilles.length > fin) {
@@ -116,16 +154,6 @@ function ListeBouteilles(props) {
     } else if (props.bouteilles.length <= fin) {
       setFin(props.bouteilles.length);
     }
-  }
-
-  /**
-   * Redirection vers la modificiation du cellier
-   */
-  function gererModifier() {
-    navigate(`/modifier-cellier`, {
-      state: { id: props.cellier[0], nom: props.nomCellier.nom },
-      replace: true,
-    });
   }
   if (props.bouteilles) {
     return (
